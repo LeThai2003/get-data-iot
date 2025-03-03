@@ -54,7 +54,10 @@ app.get("/data", async (req, res) => {
 
     console.log(data);
 
-    res.json(data);
+    const saveData = new SensorData(data);
+    await saveData.save();
+
+    res.json("Lấy data thành công");
 
   } catch (error) {
     console.log(error);
