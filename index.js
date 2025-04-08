@@ -183,6 +183,35 @@ app.get("/get-data-2", async(req, res) => {
   }
 })
 
+app.get("/get-data-3", async(req, res) => {
+  try {
+    const data = await SensorData.find();
+    const count = await SensorData.countDocuments();
+    const tempObject = [];
+    const humObject = [];
+    const lightObject = [];
+    const soildObject = [];
+    const timeObject = [];
+
+    for (const item of data) {
+      const date = new Date(item.createAt);
+      const time = date.toLocaleString("vi-VN", {timeZone: "Asia/Ho_Chi_Minh"});
+      item["time"] = time;
+    }
+    for (const item of data) {
+      tempObject.push(item.Temperature);
+      humObject.push(item.Humidity);
+      lightObject.push(item.Light);
+      soildObject.push(item.SoilHumidity);
+      timeObject.push(item.time);
+    }
+
+    res.json({Temprature: [...tempObject], Humidity: [...humObject], Light: [...lightObject], SoilHumidity: [...soildObject], Time: [...timeObject]});
+  } catch (error) {
+    console.log(error);
+  }
+})
+
 
 app.listen(port, () => {
     console.log("Đang chạy trên cổng: " + port);
