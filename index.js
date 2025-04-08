@@ -233,12 +233,29 @@ app.get("/get-water-volumn", async(req, res) => {
       createAt: new Date(Date.now() + 7 * 60 * 60 * 1000)
     });
     await newRecord.save();
-    return res.status(200).json("ok");
+    return res.status(200).json("Đã lưu dữ liệu tưới nước");
   } catch (error) {
     console.log(error);
     return res.status(500).json("")
   }
 })
+
+app.get("/get-data-water-volumn", async(req, res) => {
+  try {
+    const datas = await WaterVolumn.find();
+    const waterVolumnObject = [];
+    const timeObjects = [];
+    for (const item of datas) {
+      waterVolumnObject.push(item.volumn);
+      timeObjects.push(item.createAt.toLocaleString());
+    }
+    return res.status(200).json({waterVolumn: [...waterVolumnObject], time: [...timeObjects]});
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json("error: " + error);
+  }
+})
+
 // --------------------------------------------
 
 
