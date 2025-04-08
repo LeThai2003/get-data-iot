@@ -29,17 +29,25 @@ app.use(
 
 
 const sensorSchema = new mongoose.Schema({
-    Temperature: Number,
-    Humidity: Number,
-    Light: Number,
-    SoilHumidity: Number,
-    createAt: Date,
+  Temperature: Number,
+  Humidity: Number,
+  Light: Number,
+  SoilHumidity: Number,
+  createAt: Date,
 }, {
-    timestamps: false
+  timestamps: false
 });
 
 const SensorData = mongoose.model("SensorData", sensorSchema, "sensor_data");
 
+const waterVolumn = new mongoose.Schema({
+  volumn: Number,
+  createAt: Date,
+}, {
+  timestamps: false
+});
+
+const WaterVolumn = mongoose.model("WaterVolumn", waterVolumn, "water_volumn");
 
 
 // const sensorSchema = new mongoose.Schema({
@@ -202,7 +210,7 @@ app.get("/get-data-3", async(req, res) => {
       tempObject.push(item.Temperature);
       humObject.push(item.Humidity);
       lightObject.push(item.Light);
-      soildObject.push(item.SoilHumidity);
+      soildObject.push(100-(item.SoilHumidity/4095*100));
       timeObject.push(item.time);
     }
 
@@ -211,6 +219,27 @@ app.get("/get-data-3", async(req, res) => {
     console.log(error);
   }
 })
+
+
+// --------------------------------------------
+app.get("/get-water-volumn", async(req, res) => {
+  try {
+    const {volumn} = req.query;
+
+    
+
+    const newRecord = new WaterVolumn({
+      volumn: volumn,
+      createAt: new Date(Date.now() + 7 * 60 * 60 * 1000)
+    });
+    await newRecord.save();
+    return res.status(200).json("ok");
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json("")
+  }
+})
+// --------------------------------------------
 
 
 app.listen(port, () => {
