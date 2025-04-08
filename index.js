@@ -214,9 +214,29 @@ app.get("/get-data-3", async(req, res) => {
       timeObject.push(item.time);
     }
 
-    res.json({Temprature: [...tempObject], Humidity: [...humObject], Light: [...lightObject], SoilHumidity: [...soildObject], Time: [...timeObject]});
+    return res.json({Temprature: [...tempObject], Humidity: [...humObject], Light: [...lightObject], SoilHumidity: [...soildObject], Time: [...timeObject]});
   } catch (error) {
     console.log(error);
+    return res.status(500).json("Loi: " + error);
+  }
+})
+
+app.get("/get-newest-record", async(req, res) => {
+  try {
+    const data = await SensorData.find().sort({createAt: -1}).limit(1).select("-_id -__v");
+
+    const date = new Date(data[0].createAt);
+
+    const time = date.toLocaleString("vi-VN", {timeZone: "Asia/Ho_Chi_Minh"});
+
+    const record = data[0].toObject();
+
+    record["createAt"] = time;
+
+    return res.json(record);
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json("Loi: " + error);
   }
 })
 
@@ -256,6 +276,25 @@ app.get("/get-data-water-volumn", async(req, res) => {
   }
 })
 
+
+app.get("/get-newest-record-water", async(req, res) => {
+  try {
+    const data = await WaterVolumn.find().sort({createAt: -1}).limit(1).select("-_id -__v");
+
+    const date = new Date(data[0].createAt);
+
+    const time = date.toLocaleString("vi-VN", {timeZone: "Asia/Ho_Chi_Minh"});
+
+    const record = data[0].toObject();
+
+    record["createAt"] = time;
+
+    return res.json(record);
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json("Loi: " + error);
+  }
+})
 // --------------------------------------------
 
 
