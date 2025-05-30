@@ -227,7 +227,7 @@ app.get("/get-newest-record", async(req, res) => {
 
     const date = new Date(data[0].createAt);
 
-    const time = date.toLocaleString();
+    const time = date.toLocaleString("vi-VN", {timeZone: "Asia/Ho_Chi_Minh"});
 
     const record = data[0].toObject();
 
